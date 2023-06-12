@@ -31,7 +31,7 @@
 
 
 	//retrieving data 
-	$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+	$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC");
 	$stmt->execute();
 	$products = $stmt->fetchAll();
 
@@ -50,7 +50,7 @@
 
 		if(!empty($_GET['cat_id']) || !empty($_COOKIE['cat_id'])){
 			$cat_id= !empty($_GET['cat_id']) ? $_GET['cat_id'] : $_COOKIE['cat_id'];
-			$stmt= $pdo->prepare("SELECT * FROM products WHERE category_id =?");
+			$stmt= $pdo->prepare("SELECT * FROM products WHERE category_id =? AND quantity > 0");
 			$stmt->execute([$cat_id]);
 			$pages = $stmt->fetchAll();
 
@@ -58,12 +58,12 @@
 			$offset = ($pageNo - 1) * $numberOfrecs;
 			$totalPage = ceil(count($pages) / $numberOfrecs); 
 
-			$stmt= $pdo->prepare("SELECT * FROM products WHERE category_id =? LIMIT $offset, $numberOfrecs");
+			$stmt= $pdo->prepare("SELECT * FROM products WHERE category_id =? AND quantity > 0 LIMIT $offset, $numberOfrecs");
 			$stmt->execute([$cat_id]);
 			$pages = $stmt->fetchAll();
 			
 		}else {
-			$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numberOfrecs");
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC LIMIT $offset, $numberOfrecs");
 			$stmt->execute();
 			$pages = $stmt->fetchAll();
 		}
@@ -76,7 +76,7 @@
 		}
 		// when u search 
 		$searchKey = !empty($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC");	
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' AND quantity > 0 ORDER BY id DESC");	
 		$stmt->execute();
 		$products = $stmt->fetchAll();
 
@@ -86,7 +86,7 @@
 
 		$totalPage = ceil(count($products) / $numberOfrecs); //chopping down the products into pages
 
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numberOfrecs");           
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' AND quantity > 0 ORDER BY id DESC LIMIT $offset, $numberOfrecs");           
 		$stmt->execute();
 		$pages = $stmt->fetchAll();
 	}

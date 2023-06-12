@@ -71,13 +71,13 @@
                                 <tr>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
                                     <td>
                                         <h5>Subtotal</h5>
                                     </td>
                                     <td>
                                         <h5><?php echo escape($total); ?> MMK</h5>
                                     </td>
+                                    <td></td>
                                 </tr>
                              <?php endif;?>
                                 <tr class="out_button_area">
@@ -89,7 +89,7 @@
                                         <div class="checkout_btn_inner d-flex align-items-center justify-content-end">
                                             <a class="primary-btn" href="clearall.php">Clear All</a>
                                             <a class="gray_btn" href="index.php">Continue Shopping</a>
-                                            <a class="primary-btn" href="#">Proceed to checkout</a>
+                                            <a class="primary-btn" href="sale_order.php">Submit the Order</a>
                                         </div>
                                     </td>
                                 </tr>

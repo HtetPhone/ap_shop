@@ -1,3 +1,61 @@
+<?php 
+	session_start();
+	include "config/config.php";
+	include "config/common.php";
+
+	if(isset($_SESSION['cart'])) {
+
+		//preparing to submit to sale_orders tabale
+		//need cusId , total_price
+		$cusId = $_SESSION['user_id'];
+
+		$total = 0;
+		$cart_items = $_SESSION['cart'];
+		foreach($cart_items as $key => $val) {
+			$id= str_replace('id','',$key);
+			$qty = $val;
+
+			$stmt = $pdo->prepare("SELECT * FROM products WHERE id=".$id);
+			$stmt->execute();
+			$result= $stmt->fetch();
+			$total += $result['price'] * $qty;
+		}
+		//inserting here
+		$stmt = $pdo->prepare("INSERT INTO sale_orders (customer_id, total_price) VALUES(?,?)");
+		$result = $stmt->execute([$cusId,$total]);
+
+		if($result) {
+			//preparing to submit to sale_order_detail table
+			//needs sale_order_id, product_id, quantity
+			$sale_order_id = $pdo->lastInsertId();
+			foreach($cart_items as $key => $val) {
+				$pId= str_replace('id','',$key);
+				$qty = $val;
+
+				//INSERTING HERE INTO SALE_ORDER_DETAIL
+				$stmt = $pdo->prepare("INSERT INTO sale_order_detail (sale_order_id, product_id, quantity) VALUES(?,?,?) ");
+				$result= $stmt->execute([$sale_order_id,$pId,$qty]);
+
+				//taking out the bought product quantities
+				$qtyStmt = $pdo->prepare("SELECT * FROM products WHERE id=?");
+				$qtyStmt->execute([$pId]);
+				$qResult = $qtyStmt->fetch();
+
+				$updateQty = $qResult['quantity'] - $qty;
+
+				$updateStmt = $pdo->prepare("UPDATE products SET quantity=? WHERE id=?");
+				$updateStmt->execute([$updateQty,$pId]);
+
+				unset($_SESSION['cart']);
+			}
+		}
+	}
+
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -15,7 +73,7 @@
 	<!-- meta character set -->
 	<meta charset="UTF-8">
 	<!-- Site Title -->
-	<title>Karma Shop</title>
+	<title>AP Shop</title>
 
 	<!--
 		CSS
@@ -76,7 +134,7 @@
 				<div class="col-first">
 					<h1>Confirmation</h1>
 					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="index.php">Home<span class="lnr lnr-arrow-right"></span></a>
 					</nav>
 				</div>
 			</div>
@@ -88,64 +146,9 @@
 	<section class="order_details section_gap">
 		<div class="container">
 			<h3 class="title_confirmation">Thank you. Your order has been received.</h3>
-			<div class="row order_d_inner">
-				<div class="col-lg-6">
-					<div class="details_item">
-						<h4>Order Info</h4>
-						<ul class="list">
-							<li><a href="#"><span>Order number</span> : 60235</a></li>
-							<li><a href="#"><span>Date</span> : Los Angeles</a></li>
-							<li><a href="#"><span>Total</span> : USD 2210</a></li>
-							<li><a href="#"><span>Payment method</span> : Check payments</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-lg-6">
-					<div class="details_item">
-						<h4>Shipping Address</h4>
-						<ul class="list">
-							<li><a href="#"><span>Street</span> : 56/8</a></li>
-							<li><a href="#"><span>City</span> : Los Angeles</a></li>
-							<li><a href="#"><span>Country</span> : United States</a></li>
-							<li><a href="#"><span>Postcode </span> : 36952</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
 		</div>
 	</section>
 	<!--================End Order Details Area =================-->
 
-	<!-- start footer Area -->
-	<footer class="footer-area section_gap">
-		<div class="container">
-			<div class="footer-bottom d-flex justify-content-center align-items-center flex-wrap">
-				<p class="footer-text m-0"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-</p>
-			</div>
-		</div>
-	</footer>
-	<!-- End footer Area -->
-
-
-
-
-	<script src="js/vendor/jquery-2.2.4.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-	 crossorigin="anonymous"></script>
-	<script src="js/vendor/bootstrap.min.js"></script>
-	<script src="js/jquery.ajaxchimp.min.js"></script>
-	<script src="js/jquery.nice-select.min.js"></script>
-	<script src="js/jquery.sticky.js"></script>
-	<script src="js/nouislider.min.js"></script>
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<!--gmaps Js-->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjCGmQ0Uq4exrzdcL6rvxywDDOvfAu6eE"></script>
-	<script src="js/gmaps.min.js"></script>
-	<script src="js/main.js"></script>
-</body>
-
-</html>
+	<?php include "footer.php" ?>
+	
