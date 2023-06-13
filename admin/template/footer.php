@@ -17,10 +17,10 @@
   <!-- /.content-wrapper -->
 
   <!-- Main Footer -->
-  <footer class="main-footer py-4 pb-5 mt-5">
+  <footer class="w-100 p-4 pb-5 mt-5 border-top  ">
   <!-- To the right -->
   <div class="float-right d-sm-inline">
-    <a href="log_out.php" class="btn btn-warning">Log Out</a>
+    <a href="log_out.php" class="btn btn-warning"><i class="fas fa-lock "></i> Log Out</a>
   </div>
   <!-- Default to the left -->
   <strong>Copyright &copy; 2023 <a href="#">A Programmer | Blog</a>.</strong> All rights reserved.
@@ -36,5 +36,12 @@
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<!-- data table -->
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready( function () {
+      $('#dTable').DataTable();
+    } );
+</script>
 </body>
 </html>

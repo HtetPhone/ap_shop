@@ -33,7 +33,7 @@
             <li><a class="active" href="#"><span>Category</span> : Household</a></li>
             <li><a href="#"><span>Availibility</span> : <?php echo escape($product['quantity'])?> In Stock
           </ul>
-          <?php print_r($_SESSION['cart']); ?>
+          
           <p><?php echo escape($product['description'])?></p>
           <form action="addtocart.php" method="post">
             <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">

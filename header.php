@@ -21,6 +21,8 @@ $page = end($link_array);
 	<meta name="keywords" content="">
 	<!-- meta character set -->
 	<meta charset="UTF-8">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
 	<!-- Site Title -->
 	<title>Ap Shop</title>
 
@@ -69,12 +71,18 @@ $page = end($link_array);
 								}
 							}
 						?>
-						<ul class="nav navbar-nav navbar-right">
+						<ul class="nav navbar-nav navbar-right d-flex align-items-center">
 							<li class="nav-item"><a href="cart.php" class="cart"><span class="ti-bag"></span><?php echo $item ? $item : null ?></a></li>
 							<li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
 							</li>
+							
 						</ul>
+						<div class="ml-4 d-flex align-items-center">
+							<p class="mb-0 mr-2" style="font-size: 10px!improtant;"><?php echo escape($_SESSION['user']['name']) ?></p>
+							<a href="logout.php" class="btn btn-outline-warning"><i class="fas fa-lock"></i> Log Out</a>
+						</div>
+						
 					</div>
 				</div>
 			</nav>

@@ -4,35 +4,42 @@
 	require "config/config.php";
 	require "config/common.php";
 
-	$nameErr = $emailErr = $phNumErr = $passwordErr = "";
+	$nameErr = $emailErr = $phNumErr = $addressErr = $passwordErr = "";
 	if(isset($_POST['submit'])) {
 		if(empty($_POST['name'])) {
 			$nameErr = "<p class='text-danger'>Name is empty </p>";
-		  }else {
-			$name = filter_input(INPUT_POST,'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		  }
+		}else {
+		$name = filter_input(INPUT_POST,'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
 	  
-		  if(empty($_POST['email'])) {
-			  $emailErr = "<p class='text-danger'>email is empty </p>";
-		  }else {
+		if(empty($_POST['email'])) {
+			$emailErr = "<p class='text-danger'>email is empty </p>";
+		}else {
 			$email = filter_input(INPUT_POST,'email', FILTER_SANITIZE_EMAIL);
-		  }
-		  if(empty($_POST['phNum'])) {
-				$phNumErr = "<p class='text-danger'>Ph no. is empty</p>";
-			}else {
-				$phNum = filter_input(INPUT_POST,'phNum', FILTER_SANITIZE_NUMBER_INT);
-			}
-	  
-		  if(empty($_POST['password'])) {
+		}
+
+		if(empty($_POST['phNum'])) {
+			$phNumErr = "<p class='text-danger'>Ph no. is empty</p>";
+		}else {
+			$phNum = filter_input(INPUT_POST,'phNum', FILTER_SANITIZE_NUMBER_INT);
+		}
+
+		if(empty($_POST['address'])) {
+			$addressErr = "<p class='text-danger'>Ph no. is empty</p>";
+		}else {
+			$address = filter_input(INPUT_POST,'address', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+	
+		if(empty($_POST['password'])) {
 			$passwordErr = "<p class='text-danger'>password is empty </p>";
-		  }elseif(strlen($_POST['password']) < 6){
+		}elseif(strlen($_POST['password']) < 6){
 			$passwordErr = "<p class='text-danger'>password has to be longer than 6 characters. </p>";
-		  }else {
+		}else {
 			$password = filter_input(INPUT_POST,'password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 			$sPass = password_hash($password, PASSWORD_DEFAULT);
-		  }
+		}
 
-		if(empty($nameErr) && empty($emailErr) && empty($phNumErr) && empty($passwordErr)) {
+		if(empty($nameErr) && empty($emailErr) && empty($phNumErr) && empty($addressErr) && empty($passwordErr)) {
 
 			//checking if user exists
 			$stmt = $pdo->prepare("SELECT * FROM users WHERE email=?");
@@ -41,9 +48,9 @@
 			if($user) {
 				echo "<script> alert('User exist!!');</script>";
 			}else{
-				$sql = "INSERT INTO users(name, email, phone ,password) VALUES (?,?,?,?)";
+				$sql = "INSERT INTO users(name, email, phone ,password, address) VALUES (?,?,?,?,?)";
 				$stmt = $pdo->prepare($sql);
-				$result = $stmt->execute([$name,$email,$phNum,$sPass]);
+				$result = $stmt->execute([$name,$email,$phNum,$sPass,$address]);
 				if($result) {
 					echo "<script> alert('Successfully added!');window.location.href='login.php';    </script>";
 					}
@@ -115,11 +122,15 @@
 								<?php echo $emailErr; ?>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="number" class="form-control <?php echo $phNumErr ? 'is-invalid' : null; ?>" name="phNum" placeholder="Ph No.">
+								<input type="number" class="form-control <?php echo $phNumErr ? 'is-invalid' : null; ?>" name="phNum" placeholder="Phone No.">
 								<?php echo $phNumErr; ?>
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control <?php echo $passwordErr ? 'is-invalid' : null; ?>" name="password" placeholder="Password" >
+								<input type="text" class="form-control <?php echo $addressErr ? 'is-invalid' : null; ?>" name="address" placeholder="Address & Location">
+								<?php echo $addressErr; ?>
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="password" class="form-control <?php echo $passwordErr ? 'is-invalid' : null; ?>" name="password" placeholder="Password" >
 								<?php echo $passwordErr; ?>
 							</div>
 							<div class="col-md-12 form-group">

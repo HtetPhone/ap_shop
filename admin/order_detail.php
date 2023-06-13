@@ -37,28 +37,16 @@
             <!-- /.card-header -->
             <div class="card-body">
               <div class="mb-2 col-1 p-0">
-                <a href="order_list.php" class="btn btn-warning btn-block"><i class="fas fa-search fa-table"></i> Back</a>
+                <a href="order_list.php" class="btn btn-outline-warning btn-block"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
               </div>
               <?php
                   //retrieving data 
-                  $stmt = $pdo->prepare("SELECT * FROM sale_order_detail ORDER BY id DESC");
-                  $stmt->execute();
+                  $id = $_GET['id'];
+                  $stmt = $pdo->prepare("SELECT * FROM sale_order_detail WHERE sale_order_id=? ORDER BY id DESC");
+                  $stmt->execute([$id]);
                   $orderDetail = $stmt->fetchAll();
                  
-                  // for pagination 
-                  if(!empty($_GET['pageno'])) {
-                    $pageNo = $_GET['pageno'];
-                  }else {
-                    $pageNo = 1;
-                  }
-                  $numberOfrecs = 5; //to show
-                  $offset = ($pageNo - 1) * $numberOfrecs;
-
-                  $totalPage = ceil(count($orderDetail) / $numberOfrecs); //chopping down the posts into pages
-
-                  $stmt = $pdo->prepare("SELECT * FROM sale_order_detail ORDER BY id DESC LIMIT $offset, $numberOfrecs");
-                  $stmt->execute();
-                  $pages = $stmt->fetchAll();
+                
                 ?>
               <table class="table table-striped table-bordered">
                 <thead>
@@ -70,10 +58,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                  <?php foreach($pages as $key=>$value): ?>
+                  <?php foreach($orderDetail as $key=>$value): ?>
                     <?php 
-                        $pStmt = $pdo->prepare("SELECT * FROM products WHERE id=".$value['product_id']);
-                        $pStmt->execute();
+                        $pId = $value['product_id'];
+                        $pStmt = $pdo->prepare("SELECT * FROM products WHERE id=?");
+                        $pStmt->execute([$pId]);
                         $pResult = $pStmt->fetch();
                         // echo "<pre>";
                         // print_r($pResult); exit();   

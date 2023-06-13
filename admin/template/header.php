@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  <!-- data table  -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -32,7 +34,7 @@
       $link_array = explode('/', $link);
       $page = end($link_array);
     ?>
-    <?php if($page != 'order_list.php' && $page != 'order_detail.php' && $page != 'add.php' && $page != 'edit.php' && $page != 'add_user.php' && $page != 'edit_user.php' && $page != 'cat_add.php' && $page != 'cat_edit.php'): ?>
+    <?php if($page != 'order_list.php' && $page != 'order_detail.php' && $page != 'add.php' && $page != 'edit.php' && $page != 'add_user.php' && $page != 'edit_user.php' && $page != 'cat_add.php' && $page != 'cat_edit.php' && $page != 'weekly_report.php' && $page != 'monthly_report.php' && $page != 'royal_cus.php' && $page != 'best_selling.php'): ?>
       <li class="nav-item">
           <form class="form-inline" method="post">
             <div class="input-group">
@@ -114,6 +116,41 @@
                 Order
               </p>
             </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Reports
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="weekly_report.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Weekley Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="monthly_report.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Monthly Report</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="royal_cus.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Royal Customers</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="best_selling.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Best Selling Items</p>
+                </a>
+              </li>
+            </ul>
           </li>
         </ul>
       </nav>

@@ -23,61 +23,57 @@
 
 
       <div class="row mb-2">
-        <div class="col-sm-6">
-          <h1 class="m-0">Admin Panel</h1>
-        </div>  
-        <div class="col-12 my-2">
-         
-        </div>
         <!-- table here  -->
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h3 class="card-title">Orders</h3>
+              <h3 class="card-title font-weight-bold text-orange">Monthly Report</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
               <?php
                   //retrieving data 
-                  $stmt = $pdo->prepare("SELECT * FROM sale_orders ORDER BY id DESC");
-                  $stmt->execute();
-                  $orders = $stmt->fetchAll();
+                  $currentDate = date("Y-m-d");
+                  $startingDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+                  $pastMonth = date('Y-m-d', strtotime($currentDate . ' -1 month'));
+                  // print_r($pastMonth); exit();
+                  $stmt = $pdo->prepare("SELECT * FROM sale_orders WHERE order_date < ? AND order_date >= ? ORDER BY id DESC");
+                  $stmt->execute([$startingDate, $pastMonth]);
+                  $result = $stmt->fetchAll();
+                //   echo "<pre>";
+                //   print_r($result); exit();
                 ?>
               <table id="dTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Total Price</th>
-                    <th scope="col">Order Date</th>
-                    <th class="w-25" scope="col">Check</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Order Ddate</th>
                     </tr>
                 </thead>
                 <tbody>
-                  <?php foreach($orders as $key=>$value): ?>
+                  <?php foreach($result as $key=>$value): ?>
                     <?php 
-                        $userStmt = $pdo->prepare("SELECT * FROM users WHERE id=".$value['customer_id']);
-                        $userStmt->execute();
-                        $userResult = $userStmt->fetch();
-                        // echo "<pre>";
-                        // print_r($userResult); exit();   
-                    ?>
+                            $cusId = $value['customer_id'];
+                            $cus = $pdo->prepare("SELECT * FROM users WHERE id=?");
+                            $cus->execute([$cusId]);
+                            $cusResult = $cus->fetch();
+                        ?>
                     <tr>
                       <td><?php echo $key + 1; ?></td>
-                      <td><?php echo escape($userResult['name']) ?></td> 
+                      <td><?php echo escape($cusResult['name']) ?></td>
                       <td><?php echo escape($value['total_price']) ?> MMK</td> 
-                      <td><?php echo escape(date("Y-m-d",strtotime($value['order_date'])) )?></td> 
-                      <td>
-                        <a href="order_detail.php?id=<?php echo $value['id'] ?>" class="btn btn-default">View</a>
-                        
-                      </td> 
+                      <td><?php echo escape(date('Y-m-d', strtotime($value['order_date']))) ?></td> 
                     </tr>
                   <?php endforeach; ?>
+                    
                 </tbody>
               </table>
-            </div>
+              
           </div>
-        
+        </div>
+      </div>
 
 
 <?php include "template/footer.php"; ?>
